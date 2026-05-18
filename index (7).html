@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gabe Casiello — Sustainability Master's Programs Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.40.0/tabler-icons.min.css">
+<style>
+  :root {
+    --navy: #1F3A5F;
+    --teal: #2CA58D;
+    --orange: #F4A261;
+    --bg: #F5F7FA;
+    --border: #D1D5DB;
+    --text: #333333;
+    --muted: #6B7280;
+    --green: #5CB85C;
+    --red: #D9534F;
+    --amber: #F0AD4E;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    color: white;
+    padding: 1.5rem 2rem;
+  }
+  .header h1 {
+    margin: 0 0 0.25rem 0;
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .header .subtitle {
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+  }
+  .header-row {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .save-status {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  .save-status.saved { background: rgba(92,184,92,0.25); color: #C6F4C5; }
+
+  /* TABS */
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tab:hover { color: var(--navy); }
+  .tab.active {
+    color: var(--navy);
+    border-bottom-color: var(--orange);
+  }
+  .tab i { margin-right: 6px; font-size: 16px; vertical-align: -2px; }
+
+  /* MAIN CONTENT */
+  main {
+    padding: 1.5rem 2rem 3rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--orange);
+  }
+  h3 {
+    color: var(--navy);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  /* CANDIDATE PROFILE */
+  .profile-card {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .profile-item label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+  }
+  .profile-item input, .profile-item select, .profile-item textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: white;
+  }
+  .profile-item input:focus, .profile-item select:focus, .profile-item textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(44,165,141,0.15);
+  }
+  textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+  /* STRENGTHS PANEL */
+  .strengths {
+    background: #FFF8F0;
+    border-left: 4px solid var(--orange);
+    padding: 1rem 1.25rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1rem 0;
+  }
+  .strengths h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .strengths ul {
+    margin: 0; padding-left: 1.25rem;
+    font-size: 14px;
+  }
+  .strengths li { margin: 4px 0; }
+
+  /* PROGRAM CARDS */
+  .programs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .program-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .program-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .program-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #FAFBFC;
+  }
+  .program-header:hover { background: #F1F4F8; }
+  .program-title-block { flex: 1; }
+  .program-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 4px 0;
+  }
+  .program-school {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .tier-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .tier-1 { background: #D4EDDA; color: #155724; }
+  .tier-2 { background: #FFF3CD; color: #856404; }
+  .tier-3 { background: #E2E3E5; color: #383D41; }
+
+  .program-quick {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .program-quick-item {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .program-quick-item strong { color: var(--text); font-weight: 500; }
+
+  .expand-icon {
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    margin-left: 0.75rem;
+  }
+  .program-card.expanded .expand-icon { transform: rotate(180deg); }
+
+  .program-body {
+    display: none;
+    padding: 1.5rem;
+  }
+  .program-card.expanded .program-body { display: block; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .detail-item {
+    background: var(--bg);
+    padding: 10px 12px;
+    border-radius: 6px;
+  }
+  .detail-item .lbl {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 3px;
+    font-weight: 500;
+  }
+  .detail-item .val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  .pros, .cons {
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+  }
+  .pros {
+    background: #F0F9F0;
+    border-left: 3px solid var(--green);
+  }
+  .cons {
+    background: #FDF1F1;
+    border-left: 3px solid var(--red);
+  }
+  .pros h5, .cons h5 {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+  }
+  .pros h5 { color: #1F5E1F; }
+  .cons h5 { color: #8A2828; }
+  .pros ul, .cons ul {
+    margin: 0; padding-left: 1.1rem;
+    font-size: 13px;
+  }
+  .pros li, .cons li { margin: 3px 0; }
+
+  .section-block {
+    margin: 1.25rem 0;
+  }
+  .section-block h4 {
+    margin: 0 0 6px 0;
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .section-block p, .section-block ul {
+    margin: 0 0 0.5rem 0;
+    font-size: 13.5px;
+  }
+  .section-block ul { padding-left: 1.25rem; }
+  .section-block a {
+    color: var(--teal);
+    text-decoration: none;
+  }
+  .section-block a:hover { text-decoration: underline; }
+
+  /* GABE INPUT BLOCK */
+  .gabe-block {
+    background: #FFF8F0;
+    border: 1px solid #F4C97D;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-top: 1.25rem;
+  }
+  .gabe-block h4 {
+    margin: 0 0 0.75rem 0;
+    color: #6B4F1D;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .gabe-block h4 i { color: var(--orange); font-size: 16px; }
+
+  .rating-row {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .rating-row label {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+    min-width: 110px;
+  }
+  .star-rating {
+    display: inline-flex;
+    gap: 4px;
+  }
+  .star {
+    cursor: pointer;
+    font-size: 22px;
+    color: #D1D5DB;
+    transition: color 0.1s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: var(--orange); }
+
+  .gabe-block select, .gabe-block textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #E0D2B0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    background: white;
+    color: var(--text);
+  }
+  .gabe-block select:focus, .gabe-block textarea:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+  .gabe-block .input-block {
+    margin-top: 0.75rem;
+  }
+  .gabe-block .input-block label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  /* COMPARISON TABLE */
+  .compare-wrap { overflow-x: auto; margin-top: 1rem; }
+  table.compare {
+    width: 100%; min-width: 900px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  table.compare th, table.compare td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.compare th {
+    background: var(--navy);
+    color: white;
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  table.compare th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+  }
+  table.compare td:first-child {
+    background: #F8F9FB;
+    font-weight: 500;
+    color: var(--navy);
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+  table.compare tr:last-child td { border-bottom: none; }
+
+  /* DECISION PANEL */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .decision-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .decision-card h3 {
+    margin: 0 0 0.75rem 0;
+    color: var(--navy);
+    font-size: 15px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .decision-card h3 i { color: var(--teal); }
+
+  .rank-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .rank-list li {
+    display: flex; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .rank-list li:last-child { border-bottom: none; }
+  .rank-num {
+    width: 24px; height: 24px;
+    background: var(--orange);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 10px;
+  }
+  .rank-stars {
+    margin-left: auto;
+    color: var(--orange);
+    font-size: 14px;
+  }
+
+  /* APP TRACKER */
+  .tracker-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .tracker-table th, .tracker-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .tracker-table th {
+    background: #F8F9FB;
+    color: var(--navy);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .tracker-table input, .tracker-table select {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .tracker-table input:hover, .tracker-table select:hover {
+    border-color: var(--border);
+    background: white;
+  }
+  .tracker-table input:focus, .tracker-table select:focus {
+    outline: none;
+    border-color: var(--teal);
+    background: white;
+  }
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .status-not-started { background: #E2E3E5; color: #383D41; }
+  .status-researching { background: #D1ECF1; color: #0C5460; }
+  .status-in-progress { background: #FFF3CD; color: #856404; }
+  .status-submitted { background: #D4EDDA; color: #155724; }
+  .status-not-applying { background: #F8D7DA; color: #721C24; }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+    margin-top: 1rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.25rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -25px; top: 16px;
+    width: 12px; height: 12px;
+    background: var(--teal);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--border);
+  }
+  .timeline-date {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 4px 0;
+  }
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text);
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn:hover { background: #F8F9FB; border-color: var(--muted); }
+  .btn.btn-primary {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+  }
+  .btn.btn-primary:hover { background: #22826F; }
+  .btn.btn-danger {
+    background: white;
+    color: var(--red);
+    border-color: #F4B5B0;
+  }
+  .btn.btn-danger:hover { background: #FDF1F1; }
+
+  .toolbar {
+    display: flex; gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* INTRO SECTION */
+  .intro-block {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+  }
+  .intro-block p { margin: 0 0 0.75rem 0; font-size: 14px; }
+  .intro-block p:last-child { margin-bottom: 0; }
+
+  /* QUICK NAV */
+  .quick-nav {
+    position: sticky;
+    top: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex; gap: 4px;
+    flex-wrap: wrap;
+    z-index: 5;
+  }
+  .quick-nav button {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--muted);
+  }
+  .quick-nav button:hover { background: var(--bg); color: var(--navy); }
+
+  @media (max-width: 768px) {
+    .pros-cons { grid-template-columns: 1fr; }
+    main { padding: 1rem; }
+    .header { padding: 1rem; }
+    .tabs { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-row">
+    <div>
+      <h1>Gabe Casiello — Sustainability Master's Programs</h1>
+      <div class="subtitle">Decision dashboard · Built by Peri · All inputs auto-save</div>
+    </div>
+    <span class="save-status" id="save-status">Saving locally</span>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="overview"><i class="ti ti-home"></i>Overview</button>
+  <button class="tab" data-tab="programs"><i class="ti ti-school"></i>Programs (8)</button>
+  <button class="tab" data-tab="compare"><i class="ti ti-table"></i>Compare</button>
+  <button class="tab" data-tab="decision"><i class="ti ti-target"></i>Decision Helper</button>
+  <button class="tab" data-tab="tracker"><i class="ti ti-checklist"></i>Application Tracker</button>
+  <button class="tab" data-tab="timeline"><i class="ti ti-calendar"></i>Timeline</button>
+  <button class="tab" data-tab="data"><i class="ti ti-settings"></i>Data</button>
+</nav>
+
+<main>
+
+<!-- ============ OVERVIEW TAB ============ -->
+<section class="tab-content active" id="tab-overview">
+  <h2>Candidate Profile</h2>
+  <div class="profile-card">
+    <p style="margin:0; font-size:14px; color:var(--muted);">
+      Capture key facts as you confirm them with Gabe. These inform admission strategy and recommendations.
+    </p>
+    <div class="profile-grid">
+      <div class="profile-item">
+        <label>Undergraduate GPA</label>
+        <input type="text" data-save="gpa" placeholder="e.g. 2.85" />
+      </div>
+      <div class="profile-item">
+        <label>Preferred Start</label>
+        <select data-save="start">
+          <option value="">Select…</option>
+          <option value="jan2027">January 2027</option>
+          <option value="aug2027">August/Sept 2027</option>
+          <option value="jan2028">January 2028</option>
+          <option value="aug2028">August/Sept 2028</option>
+          <option value="flexible">Flexible</option>
+        </select>
+      </div>
+      <div class="profile-item">
+        <label>Modality Preference</label>
+        <select data-save="modality">
+          <option value="">Select…</option>
+          <option value="online">Online only</option>
+          <option value="hybrid">Hybrid (mostly online + occasional in person)</option>
+          <option value="in-person">In-person (open to relocation)</option>
+          <option value="flexible">Open to anything</option>
+        </select>
+      </div>
+      <div class="profile-item">
+        <label>Budget Comfort</label>
+        <select data-save="budget">
+          <option value="">Select…</option>
+          <option value="under30">Under $30K total</option>
+          <option value="30-50">$30K–$50K total</option>
+          <option value="50-75">$50K–$75K total</option>
+          <option value="75plus">$75K+ (with scholarships)</option>
+        </select>
+      </div>
+      <div class="profile-item">
+        <label>Working While Studying?</label>
+        <select data-save="working">
+          <option value="">Select…</option>
+          <option value="yes-ft">Yes, full-time</option>
+          <option value="yes-pt">Yes, part-time</option>
+          <option value="no">No, full-time student</option>
+          <option value="undecided">Undecided</option>
+        </select>
+      </div>
+      <div class="profile-item">
+        <label>Geographic Preference</label>
+        <input type="text" data-save="geo" placeholder="e.g. East Coast, NYC, DC, stay near PA" />
+      </div>
+    </div>
+
+    <div class="profile-grid" style="margin-top: 1rem;">
+      <div class="profile-item" style="grid-column: 1 / -1;">
+        <label>Career Goals (specific roles, industries, geography)</label>
+        <textarea data-save="goals" placeholder="e.g. Sustainability consulting at Big 4 or ERM-style boutique; open to climate finance or supply chain ESG; values discovery and variety of industries"></textarea>
+      </div>
+      <div class="profile-item" style="grid-column: 1 / -1;">
+        <label>Deal Breakers & Hard Constraints</label>
+        <textarea data-save="dealbreakers" placeholder="e.g. won't do 2-year program; can't relocate west of Mississippi; must be STEM-designated for visa, etc."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="strengths">
+    <h4><i class="ti ti-trophy"></i> What Gabe Has Going For Him</h4>
+    <ul>
+      <li><strong>Penn State BA</strong> — real, well-regarded school, not a red flag</li>
+      <li><strong>Zips Dry Cleaners PERC Project</strong> — applied compliance work that reads like sustainability consultant deliverables (carbon baseline, ROI matrix, customer research, 12-month roadmap)</li>
+      <li><strong>CFI ESG Certificate (2026)</strong> — signals serious commitment to the field</li>
+      <li><strong>EV battery recycling academic project</strong> — circular economy / clean energy supply chain angle</li>
+      <li><strong>Data analyst internship experience</strong> — Excel, market research, executive reporting</li>
+      <li><strong>Field technical background</strong> — Eagle Eye security systems transfers to renewable energy auditing/installation</li>
+      <li><strong>Long Zips tenure (since 2017)</strong> — demonstrates loyalty, work ethic, business operations exposure</li>
+      <li><strong>Open to relocation</strong> — opens up DC, NY, Miami, Denver, etc.</li>
+    </ul>
+  </div>
+
+  <div class="strengths" style="background: #F0F4FA; border-left-color: var(--navy);">
+    <h4 style="color: var(--navy);"><i class="ti ti-bulb"></i> Strategic Narrative for Applications</h4>
+    <p style="margin:0; font-size: 14px;">
+      <strong>"Non-traditional pivot from communications into sustainability, anchored by a real applied compliance project."</strong>
+      The PERC project is the spine of his Statement of Purpose for every application. It demonstrates initiative, baseline auditing skills, regulatory research, stakeholder communication (the customer survey), and concrete deliverables. Combined with the ESG certificate, it makes him a credible career-switcher rather than just an interested liberal arts grad.
+    </p>
+  </div>
+
+  <h2 style="margin-top: 2rem;">How to Use This Dashboard</h2>
+  <div class="intro-block">
+    <p><strong>1. Programs Tab</strong> — eight curated programs across three tiers. Each expandable card has the full breakdown: cost, length, modality, admissions, pros/cons, scholarships, and a Gabe Input section where you capture his reactions in real time.</p>
+    <p><strong>2. Compare Tab</strong> — side-by-side table for quick comparison across all the dimensions that matter.</p>
+    <p><strong>3. Decision Helper</strong> — shows his rated rankings, top picks, and a forced-choice exercise.</p>
+    <p><strong>4. Application Tracker</strong> — once you've narrowed to 3–4 programs, manage deadlines, requirements, essay status, recommenders, and submission tracking here.</p>
+    <p><strong>5. Timeline</strong> — visual roadmap of what needs to happen when for a Sept 2027 start.</p>
+    <p style="color: var(--muted); font-size: 13px;"><strong>Note:</strong> Everything you type saves to this browser automatically. To preserve across devices or back up, use the Data tab to export to JSON.</p>
+  </div>
+</section>
+
+<!-- ============ PROGRAMS TAB ============ -->
+<section class="tab-content" id="tab-programs">
+  <h2>Eight Programs to Consider</h2>
+  <div class="quick-nav">
+    <span style="font-size: 12px; color: var(--muted); padding: 4px 8px;">Jump to:</span>
+    <button onclick="scrollToProg('psu')">Penn State</button>
+    <button onclick="scrollToProg('kogod')">American/Kogod</button>
+    <button onclick="scrollToProg('bard-ms')">Bard MS</button>
+    <button onclick="scrollToProg('bard-mba')">Bard MBA</button>
+    <button onclick="scrollToProg('rit')">RIT</button>
+    <button onclick="scrollToProg('miami')">Miami Herbert</button>
+    <button onclick="scrollToProg('cudenver')">CU Denver</button>
+    <button onclick="scrollToProg('stevens')">Stevens</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" onclick="expandAll(true)"><i class="ti ti-arrows-vertical"></i>Expand All</button>
+    <button class="btn" onclick="expandAll(false)"><i class="ti ti-arrows-minimize"></i>Collapse All</button>
+  </div>
+
+  <div class="programs-grid" id="programs-list">
+    <!-- Programs injected by JS -->
+  </div>
+</section>
+
+<!-- ============ COMPARE TAB ============ -->
+<section class="tab-content" id="tab-compare">
+  <h2>Side-by-Side Comparison</h2>
+  <p style="font-size: 14px; color: var(--muted); margin-bottom: 1rem;">
+    Quick reference for the headline differences. For full details, see the Programs tab.
+  </p>
+  <div class="compare-wrap">
+    <table class="compare" id="compare-table">
+      <!-- Built by JS -->
+    </table>
+  </div>
+</section>
+
+<!-- ============ DECISION HELPER ============ -->
+<section class="tab-content" id="tab-decision">
+  <h2>Decision Helper</h2>
+  <p style="font-size: 14px; color: var(--muted);">
+    Once you've rated programs in the Programs tab, this view shows his top picks and surfaces patterns.
+  </p>
+
+  <div class="decision-grid">
+    <div class="decision-card">
+      <h3><i class="ti ti-star"></i>Top Picks by Rating</h3>
+      <ol class="rank-list" id="top-picks">
+        <li style="color: var(--muted); font-size: 13px;">Rate programs in the Programs tab to populate this list.</li>
+      </ol>
+    </div>
+
+    <div class="decision-card">
+      <h3><i class="ti ti-flag"></i>Apply / Maybe / Skip Status</h3>
+      <div id="status-summary" style="font-size: 13px;">
+        <p style="color: var(--muted);">Set status on each program in the Programs tab.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-card" style="margin-top: 1rem;">
+    <h3><i class="ti ti-clipboard-list"></i>Forced-Choice Discussion Questions</h3>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 1rem;">Walk Gabe through these to surface his actual priorities. Capture his answers as you go.</p>
+
+    <div class="profile-item" style="margin-bottom: 1rem;">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        1. If you could only pick ONE: prestige of school OR specific consulting career outcomes — which matters more?
+      </label>
+      <textarea data-save="dq1"></textarea>
+    </div>
+
+    <div class="profile-item" style="margin-bottom: 1rem;">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        2. Are you willing to do 1 more year of work (in any sustainability-adjacent role) before starting a master's, if it meant getting into a better program with scholarship money? Why or why not?
+      </label>
+      <textarea data-save="dq2"></textarea>
+    </div>
+
+    <div class="profile-item" style="margin-bottom: 1rem;">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        3. Online vs in-person — what's your gut answer, and what's pulling you each way?
+      </label>
+      <textarea data-save="dq3"></textarea>
+    </div>
+
+    <div class="profile-item" style="margin-bottom: 1rem;">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        4. What's the maximum total debt you'd take on for this? What about your parents' view on cost?
+      </label>
+      <textarea data-save="dq4"></textarea>
+    </div>
+
+    <div class="profile-item" style="margin-bottom: 1rem;">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        5. Which type of consulting most excites you: corporate strategy (Big 4 style), boutique specialist (ERM/BSR), in-house sustainability, or something else?
+      </label>
+      <textarea data-save="dq5"></textarea>
+    </div>
+
+    <div class="profile-item" style="margin-bottom: 1rem;">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        6. Have you talked to any sustainability consultants? Are you willing to do 10 informational interviews before applying?
+      </label>
+      <textarea data-save="dq6"></textarea>
+    </div>
+
+    <div class="profile-item">
+      <label style="text-transform:none;letter-spacing:normal;color:var(--navy);font-size:14px;">
+        7. Other notes from conversation
+      </label>
+      <textarea data-save="dq-notes" style="min-height: 120px;"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPLICATION TRACKER ============ -->
+<section class="tab-content" id="tab-tracker">
+  <h2>Application Tracker</h2>
+  <p style="font-size: 14px; color: var(--muted);">
+    Once you've narrowed to your target list, use this to track each application's status. Add new schools using the button below.
+  </p>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="addTrackerRow()"><i class="ti ti-plus"></i>Add Application</button>
+    <button class="btn" onclick="populateFromApply()"><i class="ti ti-download"></i>Auto-populate from "Apply" status</button>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="tracker-table" id="tracker-table">
+      <thead>
+        <tr>
+          <th style="min-width: 160px;">Program</th>
+          <th style="min-width: 110px;">Status</th>
+          <th style="min-width: 110px;">App Deadline</th>
+          <th style="min-width: 100px;">App Fee</th>
+          <th style="min-width: 100px;">Recs (#)</th>
+          <th style="min-width: 100px;">Essay Status</th>
+          <th style="min-width: 100px;">Transcript</th>
+          <th style="min-width: 100px;">Submitted?</th>
+          <th style="min-width: 100px;">Decision Date</th>
+          <th style="min-width: 100px;">Decision</th>
+          <th style="min-width: 200px;">Notes</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tracker-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="tab-content" id="tab-timeline">
+  <h2>Sample Timeline for September 2027 Start</h2>
+  <p style="font-size: 14px; color: var(--muted);">
+    Adjust based on the actual programs you target. If pursuing Jan 2027 start, compress this by 9 months.
+  </p>
+  <div class="timeline" id="timeline-list">
+    <div class="timeline-item">
+      <div class="timeline-date">Now — June 2026</div>
+      <h4 class="timeline-title">Narrow target list to 3–5 programs</h4>
+      <p class="timeline-desc">Use this dashboard, do informational interviews with sustainability consultants, attend 1–2 admissions webinars per program. Confirm GPA and decide on need for additional work experience.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">June — August 2026</div>
+      <h4 class="timeline-title">Deepen the PERC project narrative & build relationships</h4>
+      <p class="timeline-desc">Continue Zips internship through summer. Document outcomes (any cost savings? customer response data? owner decisions?). Identify 2 recommenders: ideally 1 Penn State professor + 1 from Main Street Media or Zips owner. Have coffee with each, share goals, plant the ask.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">September 2026</div>
+      <h4 class="timeline-title">Draft Statement of Purpose v1</h4>
+      <p class="timeline-desc">Anchor on the PERC project. Story arc: communications grad → applied sustainability project → recognition of consulting fit → why this program. Get Peri's review. Tailor 2–3 versions per program type (business-school programs vs applied science programs read differently).</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">October 2026</div>
+      <h4 class="timeline-title">Hit Kogod priority deadline + Penn State early</h4>
+      <p class="timeline-desc">American/Kogod's October 15 priority scholarship deadline. Penn State World Campus has rolling admissions but earlier is better. Formally ask recommenders, give them 4 weeks + your resume + draft SoP.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">November — December 2026</div>
+      <h4 class="timeline-title">Submit remaining applications</h4>
+      <p class="timeline-desc">December 15 is Kogod's priority scholarship round 2. Most other programs have January–March priority deadlines. Submit by Dec 31 for best scholarship consideration broadly. Bard rolling.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">January — March 2027</div>
+      <h4 class="timeline-title">Interviews & decision waves</h4>
+      <p class="timeline-desc">Most programs interview Jan–March. Decisions typically Feb–April. File FAFSA in January. Visit campuses (or attend virtual admitted student events) for top 2.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April — May 2027</div>
+      <h4 class="timeline-title">Make final decision & deposit</h4>
+      <p class="timeline-desc">Compare aid packages, negotiate scholarships if possible (Bard, Kogod, RIT all have history of matching competing offers), put down deposit. Notify other schools politely.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">May — August 2027</div>
+      <h4 class="timeline-title">Pre-enrollment prep</h4>
+      <p class="timeline-desc">Complete any prerequisites (econ/accounting for Bard MBA, bridge courses for RIT if applicable). Housing logistics if relocating. Plan transition from Zips.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">August — September 2027</div>
+      <h4 class="timeline-title">Start program</h4>
+      <p class="timeline-desc">Orientation, first courses. Connect with career office in week 1 — don't wait until year 2 to think about consulting recruitment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DATA TAB ============ -->
+<section class="tab-content" id="tab-data">
+  <h2>Data Management</h2>
+  <div class="intro-block">
+    <h3>Export / Import</h3>
+    <p>Your dashboard data lives in this browser's localStorage. To back it up, share with another device, or sync to a GitHub repo, export to JSON.</p>
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="exportData()"><i class="ti ti-download"></i>Export to JSON</button>
+      <button class="btn" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i>Import JSON</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)" />
+      <button class="btn btn-danger" onclick="resetAll()"><i class="ti ti-trash"></i>Clear All Data</button>
+    </div>
+    <div id="export-output" style="margin-top: 1rem; display: none;">
+      <h4 style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;">Copy this JSON:</h4>
+      <textarea readonly id="export-text" style="width:100%;height:200px;font-family:monospace;font-size:12px;background:#F8F9FB;border:1px solid var(--border);padding:8px;border-radius:6px;"></textarea>
+    </div>
+  </div>
+
+  <div class="intro-block" style="margin-top: 1rem;">
+    <h3>For a GitHub Repo</h3>
+    <p>To continue building this dashboard as you and Gabe work through applications, save this entire HTML file to a private GitHub repo. The file is self-contained — no build step. Suggested repo structure:</p>
+    <ul style="font-family: monospace; font-size: 13px; background:#F8F9FB; padding: 12px; border-radius:6px; list-style:none;">
+      <li>gabe-sustainability-masters/</li>
+      <li>&nbsp;&nbsp;├── index.html  ← this dashboard</li>
+      <li>&nbsp;&nbsp;├── data/</li>
+      <li>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── dashboard-export-YYYY-MM-DD.json</li>
+      <li>&nbsp;&nbsp;├── essays/</li>
+      <li>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── kogod-sop-v1.md</li>
+      <li>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── psu-sop-v1.md</li>
+      <li>&nbsp;&nbsp;├── recommenders/</li>
+      <li>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── recommender-tracking.md</li>
+      <li>&nbsp;&nbsp;└── README.md</li>
+    </ul>
+    <p style="font-size: 13px; color: var(--muted);">Push periodic exports of the JSON so you have version history of decisions and ratings.</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ============ PROGRAM DATA ============
+const programs = [
+  {
+    id: "psu",
+    name: "MPS in Renewable Energy & Sustainability Systems (RESS)",
+    school: "Penn State World Campus",
+    tier: 1,
+    summary: "Online MPS from Gabe's alma mater. Sustainability Management & Policy track. No GRE, rolling start, stackable certificates.",
+    quick: {
+      cost: "~$32K–36K total",
+      length: "~2 years part-time",
+      modality: "100% Online",
+      start: "Multiple per year"
+    },
+    details: {
+      "Total Credits": "33 credits",
+      "Cost per credit": "~$1,000 (graduate)",
+      "Estimated total tuition": "$32K–36K + fees",
+      "Modality": "Fully online (asynchronous)",
+      "Format": "Self-paced, 1–2 courses per semester typical",
+      "Length": "2–3 years part-time, faster if full-time",
+      "GRE/GMAT": "Not required",
+      "Min GPA": "3.0 (graduate standard)",
+      "Application fee": "$65",
+      "Start terms": "Fall, Spring, Summer (rolling)",
+      "Priority deadlines": "Roughly 6 weeks before semester start",
+      "STEM-designated": "Yes (engineering housed)",
+      "Career services": "Penn State career resources + alumni network"
+    },
+    pros: [
+      "Lowest cost option on this list — federal aid eligible",
+      "He's already a Penn State alum (familiar systems, alumni network)",
+      "100% online means he can keep working at Zips while studying",
+      "Multiple start dates per year — could start as early as Fall 2026 or Spring 2027",
+      "Stackable: start with a 9-credit certificate, roll into the full MPS if it clicks",
+      "Sustainability Management & Policy track explicitly covers ESG, regulatory analysis, business plans",
+      "Faculty focus on ESG and workforce requirements for renewable energy industry",
+      "33-credit MPS is more manageable than 60-credit MBAs"
+    ],
+    cons: [
+      "Less business-school flavor than Kogod/Bard — more engineering-housed",
+      "Online-only means weaker peer network than in-person cohort",
+      "Less consulting-coded brand recognition (not a 'sustainability consulting' brand)",
+      "MPS (Professional Master's) carries slightly less weight than MS or MBA in some hiring contexts",
+      "No structured capstone consulting engagement like Bard NYCLab"
+    ],
+    scholarships: "Limited merit aid for online students. Federal aid eligible (Stafford + Grad PLUS loans). Penn State has small need-based grants. Employer reimbursement common — Zips owner could potentially contribute.",
+    deadline: "Rolling. For Fall 2027, apply by June 2027. Earlier = better registration access.",
+    placement: "Renewable energy companies, ESG/sustainability roles at PA-region employers, in-house corporate sustainability. Less direct Big 4/MBB placement pipeline.",
+    fit: "Strong fit for the cautious, work-while-you-study path. Lowest risk, lowest cost, lets him test conviction with the certificate first.",
+    link: "https://www.worldcampus.psu.edu/degrees-and-certificates/penn-state-online-renewable-energy-and-sustainability-systems-masters-degree"
+  },
+  {
+    id: "kogod",
+    name: "MS in Sustainability Management (MSSM)",
+    school: "American University — Kogod School of Business",
+    tier: 1,
+    summary: "Business-school-housed MS with explicit Sustainability Consultant career track. Deloitte/EY placement track record. In-person OR online.",
+    quick: {
+      cost: "~$51K tuition (before scholarship)",
+      length: "12–21 months",
+      modality: "In-person or 100% online",
+      start: "Fall (with rolling rounds)"
+    },
+    details: {
+      "Total Credits": "30 credits",
+      "Cost per credit": "~$1,708",
+      "Estimated total tuition": "~$51,000 (scholarships can reduce 20–50%)",
+      "Modality": "Full-time in DC OR 100% online (evening condensed courses)",
+      "Format": "Full-time or part-time, 12–21 month range",
+      "Length": "12 months (intensive) to 21 months (part-time)",
+      "GRE/GMAT": "Not required",
+      "Min GPA": "No hard minimum stated; holistic review",
+      "Application fee": "$100 (waivers available)",
+      "Start terms": "Fall start primarily",
+      "Priority deadlines": "Oct 15 (early/priority scholarship), Dec 15 (round 2 scholarship), Apr 15 (final)",
+      "STEM-designated": "Yes (residential program)",
+      "Capstone": "Live consulting engagement + international trip (Scandinavia/Latin America)"
+    },
+    pros: [
+      "Business school home — explicit consulting orientation",
+      "Sustainability Consultant career track (one of four tracks)",
+      "Documented placements at Deloitte Consulting, EY, Marriott, World Bank, WWF",
+      "Average grad salary $90K (2019) — strong ROI signal",
+      "Auto-considered for merit scholarships when you apply — multiple Kogod scholarships available",
+      "DC location = proximity to federal agencies, NGOs, Big 4 sustainability practices",
+      "Capstone includes real consulting project with sustainability stakeholders + study abroad",
+      "Six professional graduate certificates available for additional credentials",
+      "No undergrad business prerequisites required, no work experience required",
+      "Both in-person and online options"
+    ],
+    cons: [
+      "$51K sticker is the highest among non-MBA options here",
+      "Fall-start only (no January entry)",
+      "Average student is more pre-professional/experienced — Gabe may be on the younger end of cohort",
+      "Living in DC during program adds significant cost on top of tuition",
+      "Competitive at the priority scholarship deadlines"
+    ],
+    scholarships: "All applicants auto-considered for merit scholarships. 17+ need- and merit-based Kogod scholarships for grad students. Priority deadlines (Oct 15, Dec 15) give best scholarship odds. Application fee waivers available.",
+    deadline: "Oct 15, 2026 (early + priority scholarship); Dec 15, 2026 (priority scholarship round 2); Apr 15, 2027 (final). All for Fall 2027 start.",
+    placement: "Strong consulting placement (Deloitte, EY). DC creates pipelines to federal/NGO roles. Capstone consulting clients become network.",
+    fit: "Best fit IF (a) Gabe is willing to relocate or commit to a structured online cohort and (b) family supports the higher cost as an investment. The Sustainability Consultant track is the most direct fit for his stated career interest.",
+    link: "https://kogod.american.edu/programs-admissions/masters/sustainability-management-stem"
+  },
+  {
+    id: "bard-ms",
+    name: "MS in Environmental Policy",
+    school: "Bard College — Center for Environmental Policy",
+    tier: 2,
+    summary: "Smaller, intimate MS program with explicit below-3.0 GPA path. Strong sustainability focus, drivable from PA.",
+    quick: {
+      cost: "~$72K total (with Peace Corps Coverdell fellowship potential)",
+      length: "2 years full-time",
+      modality: "In-person Annandale, NY",
+      start: "August (annual)"
+    },
+    details: {
+      "Total Credits": "60 credits (over 2 years)",
+      "Cost per credit": "$1,442",
+      "Estimated total tuition": "~$72K (~$36K/year)",
+      "Modality": "Full-time in-person, Annandale-on-Hudson NY",
+      "Format": "Full-time, cohort-based",
+      "Length": "2 years",
+      "GRE/GMAT": "Not required (but optional submission if GPA <3.0)",
+      "Min GPA": "3.0 standard — BELOW 3.0 path via skills assessment",
+      "Application fee": "Standard",
+      "Start terms": "August only",
+      "Priority deadlines": "Rolling, with deadlines roughly Dec 1 / Feb 1 / Apr 1 for fall",
+      "STEM-designated": "No",
+      "Special": "Coverdell Fellowship for returned Peace Corps volunteers"
+    },
+    pros: [
+      "Explicit accommodation for sub-3.0 GPA via skills assessment — rare and valuable",
+      "Drivable from Bucks County / Philadelphia area",
+      "Small cohort (~30 students) means strong faculty access and peer relationships",
+      "Internship requirement built into the program",
+      "Bard's environmental brand is well-respected in policy/NGO world",
+      "Test-optional, holistic admissions",
+      "Below-3.0 path explicitly stated on their FAQ"
+    ],
+    cons: [
+      "2-year full-time commitment = can't work much",
+      "$72K total is significant",
+      "Policy-focused rather than consulting-focused (good for NGOs, govt, less direct corporate)",
+      "Smaller alumni network than Penn State or Kogod",
+      "Annandale is rural — limited outside networking and part-time job options",
+      "Less of a 'business consulting' brand"
+    ],
+    scholarships: "Fellowships, scholarships, project assistantships, campus employment available. Need-based and merit-based. Coverdell Fellowship if Peace Corps (~$25K). Awards typical of ~30% tuition reduction for strong applicants.",
+    deadline: "Rolling for Fall 2027. Early submission for best aid (Dec 2026–Feb 2027 ideal).",
+    placement: "Environmental policy, NGOs (Environmental Defense Fund, etc.), government agencies. Less Big 4 consulting; more boutique sustainability advisory.",
+    fit: "Best fit IF GPA is below 3.0 and policy/NGO consulting is interesting alongside corporate. Gives him a credible 2nd-chance path if academic record is weak.",
+    link: "https://gps.bard.edu/academics/ms-in-environmental-policy"
+  },
+  {
+    id: "bard-mba",
+    name: "MBA in Sustainability",
+    school: "Bard College — Graduate Programs in Sustainability",
+    tier: 2,
+    summary: "Hybrid MBA with year-long NYCLab sustainability consulting course. Ranked top 10 for non-profit MBA. Below-3.0 path available.",
+    quick: {
+      cost: "~$74K–85K (net ~$59K with fellowship)",
+      length: "2 years (or 3 part-time)",
+      modality: "Hybrid: monthly NYC weekends + online evenings",
+      start: "August (annual)"
+    },
+    details: {
+      "Total Credits": "60 credits",
+      "Cost per credit": "Variable; total ~$74,430 (3-yr part-time) to $85K (2-yr full-time)",
+      "Estimated total tuition": "~$74K–85K sticker; ~$59K net with typical fellowship",
+      "Modality": "Hybrid — weekend residencies in NYC + online courses",
+      "Format": "Full-time (2 yr) or part-time (3 yr) — both hybrid",
+      "Length": "2 or 3 years depending on pace",
+      "GRE/GMAT": "Not required (waiver auto-grant if GPA 3.3+)",
+      "Min GPA": "3.0 standard — BELOW 3.0 path via skills assessment",
+      "Application fee": "Enrollment deposit $515",
+      "Start terms": "August only",
+      "Priority deadlines": "Online MBA closes May 15 each year for fall",
+      "Prerequisites": "Intro Accounting + Microeconomics (can do over summer at Bard)",
+      "Capstone": "9-credit independently-mentored capstone in consulting/entrepreneurship",
+      "Signature program": "NYCLab — year-long sustainability consulting for real clients (Siemens, Nasdaq)"
+    },
+    pros: [
+      "ONLY MBA program with a year-long sustainability consulting course — directly career-aligned",
+      "Documented placements at KPMG, BSR, ERM, Freeman Consulting — boutique sustainability shops",
+      "Hybrid structure allows continued part-time work in PA between NYC weekends",
+      "Drivable from PA (NYC is ~2 hours from Bucks County)",
+      "Below-3.0 GPA accommodation via skills assessment",
+      "MBA credential opens doors that an MS doesn't",
+      "Fellowships typically reduce net cost by $20K–25K",
+      "Top 10 for non-profit management MBA (per Princeton Review)",
+      "All faculty are practitioner-teachers — sustainability is their day job"
+    ],
+    cons: [
+      "MBA is a 2-year commitment, more rigorous than MS",
+      "Even with fellowship, ~$59K is significant",
+      "Monthly NYC weekends require flexibility — travel, lodging cost extra",
+      "Must complete Intro Accounting + Microeconomics prerequisites (Bard offers them online in summer for $400 each)",
+      "MBA-level rigor — harder than MS programs, especially without quant background",
+      "Smaller program means smaller alumni network",
+      "International students need lawful permanent residency for the MBA (visa-ineligible)"
+    ],
+    scholarships: "Fellowships, scholarships, project assistantships, student employment available. Coverdell Fellowship ($25,500 for Peace Corps alums). Typical fellowship brings net tuition to ~$59K from ~$85K sticker.",
+    deadline: "Rolling. May 15 final deadline for August 2027 start.",
+    placement: "KPMG, BSR, ERM, Freeman Consulting — direct consulting placement is documented and consistent. Alums have started their own consulting firms (Just Capital Quotient, Art to Zero).",
+    fit: "Best fit for a SERIOUS consulting career commitment. The NYCLab year-long client engagement is the single most consulting-aligned feature of any program on this list. Best for Gabe IF he's willing to commit to 2 years of intensive study and the geographic logistics work.",
+    link: "https://gps.bard.edu/academics/mba-in-sustainability"
+  },
+  {
+    id: "rit",
+    name: "MS in Sustainable Systems",
+    school: "Rochester Institute of Technology — Golisano Institute for Sustainability",
+    tier: 2,
+    summary: "Systems-thinking MS at RIT's dedicated sustainability institute. Generous merit scholarships. Optional MS→MBA pathway.",
+    quick: {
+      cost: "~$60K total (often reduced by ~30% scholarship)",
+      length: "12–24 months",
+      modality: "In-person Rochester NY",
+      start: "Fall, Spring"
+    },
+    details: {
+      "Total Credits": "30 credits",
+      "Cost per credit": "~$2,000 (private)",
+      "Estimated total tuition": "~$60K — but median scholarship ~30% = $42K net",
+      "Modality": "In-person Rochester, NY",
+      "Format": "Full-time (9+ credits/semester) or part-time",
+      "Length": "12–24 months",
+      "GRE/GMAT": "Not required",
+      "Min GPA": "3.0 recommended (not hard); conditional admission possible",
+      "Application fee": "$65",
+      "Start terms": "Fall, Spring (rolling)",
+      "Priority deadlines": "Rolling space-available",
+      "STEM-designated": "Yes",
+      "Special": "Accelerated MS→MBA in 2 years total with auto-MBA-admission and guaranteed scholarship"
+    },
+    pros: [
+      "100% claimed placement rate post-graduation",
+      "RIT awards $30M+ annual merit scholarships — median grad scholarship ~30% ($13K)",
+      "Accepts ALL academic backgrounds (mechanical engineering to political science)",
+      "Sub-3.0 GPA conditional admission possible",
+      "Accelerated MS+MBA pathway — get both degrees in 2 years total with auto-MBA admission",
+      "Capstone clients include Wegmans and Rochester Regional Health",
+      "Strong career counseling and employer relationships",
+      "STEM-designated for OPT extension if relevant",
+      "Golisano Institute is a dedicated sustainability research center (LEED Platinum buildings)"
+    ],
+    cons: [
+      "Rochester is far from his home base — relocation required, less family proximity",
+      "More applied/engineering than business-housed",
+      "Brand recognition strong in upstate NY but less prominent in DC/NYC consulting markets",
+      "Rochester job market is more limited for sustainability consulting (most opportunities require relocation again post-grad)",
+      "Net cost still ~$42K after typical scholarship"
+    ],
+    scholarships: "Auto-considered for merit-based scholarships (5–40% of tuition; median ~30%). Graduate assistantships available with stipend + tuition remission. MS+MBA pathway includes guaranteed MBA scholarship.",
+    deadline: "Rolling, space-available. Apply by Feb–March for Fall 2027 with best scholarship odds.",
+    placement: "100% placement claimed. Strong with regional employers (Wegmans, Rochester Regional Health, Eastman Kodak alumni network), New York State sustainability roles, broader industrial sustainability.",
+    fit: "Best fit IF willing to relocate AND attracted to the MS+MBA combo path. The scholarship math here is often the most favorable on a percentage basis.",
+    link: "https://www.rit.edu/study/sustainable-systems-ms"
+  },
+  {
+    id: "miami",
+    name: "MS in Sustainable Business",
+    school: "University of Miami — Herbert Business School",
+    tier: 3,
+    summary: "STEM-designated, business-housed program with EY and ERM placement. Florida location.",
+    quick: {
+      cost: "~$60K+ total",
+      length: "12 months typical",
+      modality: "In-person Miami",
+      start: "Fall"
+    },
+    details: {
+      "Total Credits": "30 credits",
+      "Cost per credit": "~$2,100",
+      "Estimated total tuition": "~$60K+",
+      "Modality": "In-person, Coral Gables FL",
+      "Format": "Full-time, 12 months",
+      "Length": "12 months",
+      "GRE/GMAT": "Test-optional",
+      "Min GPA": "3.0 standard",
+      "Application fee": "~$65",
+      "Start terms": "Fall",
+      "STEM-designated": "Yes",
+      "Capstone": "Capstone with internship, startup, or consulting assignment"
+    },
+    pros: [
+      "STEM-designated business school program",
+      "Documented placements at EY Climate Change & Sustainability Services and ERM",
+      "Capstone explicitly offers consulting track",
+      "Miami is a Latin America gateway — useful for international sustainability work",
+      "Smaller, more selective program means tight alumni community"
+    ],
+    cons: [
+      "Florida location far from his PA roots — relocation required",
+      "Sticker price is high without strong scholarship signaling",
+      "Smaller program means less of a known brand outside FL/LatAm corridor",
+      "Less explicit consulting track than Kogod or Bard MBA",
+      "Higher cost of living in Miami"
+    ],
+    scholarships: "Merit scholarships available; not as automatic or generous as RIT.",
+    deadline: "Rolling, with priority deadlines roughly Jan–March for Fall 2027.",
+    placement: "EY CCaSS, ERM, regional sustainability roles, Latin America-focused consulting.",
+    fit: "Stretch consideration. Would only prioritize if Florida geography appeals strongly OR if a generous scholarship offer materializes.",
+    link: "https://www.herbert.miami.edu/graduate/find-and-compare-programs/sustainable-business/index.html"
+  },
+  {
+    id: "cudenver",
+    name: "MS in Sustainable Business",
+    school: "University of Colorado Denver — Business School",
+    tier: 3,
+    summary: "Public business school option with stackable certificate structure and built-in 'Sustainability Corps' consulting program.",
+    quick: {
+      cost: "~$35K–45K (depends on residency)",
+      length: "12–24 months",
+      modality: "In-person Denver / hybrid",
+      start: "Fall, Spring"
+    },
+    details: {
+      "Total Credits": "33 credits (3 stackable certificates)",
+      "Cost per credit": "~$1,200–1,400 (out-of-state)",
+      "Estimated total tuition": "~$35K–45K out-of-state",
+      "Modality": "In-person Denver, hybrid options",
+      "Format": "Full-time or part-time, stackable certificates",
+      "Length": "12–24 months",
+      "GRE/GMAT": "Not required",
+      "Min GPA": "3.0 standard",
+      "STEM-designated": "Check current status",
+      "Special": "Sustainability Corps does real consulting projects with companies and nonprofits"
+    },
+    pros: [
+      "Sustainability Corps is a built-in consulting practicum — directly career-relevant",
+      "Lower public-school cost than private alternatives",
+      "Three stackable certificates (Foundations + 2 elective certs) = flexibility to specialize",
+      "Denver is a growing sustainability hub (renewable energy companies, NREL, B Lab presence)",
+      "300+ business partners for career networking",
+      "Annual France/Spain study abroad option"
+    ],
+    cons: [
+      "Out-of-state tuition is still substantial",
+      "Smaller program brand than the East Coast schools",
+      "Denver relocation = far from family/network in PA",
+      "Less prominent in Big 4 consulting recruitment than DC/NYC schools"
+    ],
+    scholarships: "Public university scholarships available, generally smaller awards than private school merit. Federal aid eligible.",
+    deadline: "Rolling, with priority for spring (Oct/Nov 2026) and fall (Feb/Mar 2027).",
+    placement: "Sustainability roles at regional employers, boutique consulting, in-house corporate ESG.",
+    fit: "Strong value option IF Denver geography appeals. The Sustainability Corps consulting practicum is the unique differentiator.",
+    link: "https://business.ucdenver.edu/ms/sustainable-business"
+  },
+  {
+    id: "stevens",
+    name: "MS in Sustainability Management",
+    school: "Stevens Institute of Technology",
+    tier: 3,
+    summary: "Hoboken, NJ technical school program with consulting training module and free ISSP membership.",
+    quick: {
+      cost: "~$55K total",
+      length: "12–18 months",
+      modality: "In-person Hoboken (NYC metro)",
+      start: "Fall, Spring"
+    },
+    details: {
+      "Total Credits": "30 credits typically",
+      "Cost per credit": "~$1,800",
+      "Estimated total tuition": "~$55K",
+      "Modality": "In-person Hoboken, NJ (NYC metro)",
+      "Format": "Full-time or part-time",
+      "Length": "12–18 months",
+      "GRE/GMAT": "Not required typically",
+      "Min GPA": "3.0 standard",
+      "STEM-designated": "Likely (Stevens is engineering-heavy)",
+      "Special": "Sustainability consulting training module in capstone + free ISSP membership with study guide for Sustainability Associate exam"
+    },
+    pros: [
+      "Stevens is in NYC metro — strong access to NYC sustainability employers and recruiters",
+      "Free ISSP (International Society of Sustainability Professionals) membership + Sustainability Associate exam prep",
+      "10–15 hour sustainability consulting training module built into capstone",
+      "Drivable from Bucks County (Hoboken is ~90 minutes)",
+      "Engineering-heavy school = quant-strong curriculum"
+    ],
+    cons: [
+      "Less well-known sustainability brand vs. Kogod or Bard",
+      "$55K is steep without unique placement advantages",
+      "More AI/engineering flavor than business strategy flavor",
+      "NYC living costs add significantly if living near campus"
+    ],
+    scholarships: "Merit aid available; check specific MS-level awards.",
+    deadline: "Rolling with priority deadlines roughly Feb–April for Fall 2027.",
+    placement: "NYC metro sustainability roles, engineering-adjacent consulting, manufacturing sustainability.",
+    fit: "Stretch option. Useful if NYC metro appeals and Bard MBA isn't the right fit. ISSP credential is a nice add-on.",
+    link: "https://www.stevens.edu/program/sustainability-management-masters"
+  }
+];
+
+// ============ STATE MANAGEMENT ============
+const STORAGE_KEY = 'gabeSustainabilityDashboard_v1';
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) { console.error('Load failed', e); }
+  return {
+    profile: {},
+    programData: {},  // { progId: { rating: 0-5, status: '', notes: '', interest: '' } }
+    decision: {},
+    tracker: []
+  };
+}
+
+let saveTimer;
+function saveState() {
+  clearTimeout(saveTimer);
+  const status = document.getElementById('save-status');
+  status.textContent = 'Saving...';
+  status.classList.remove('saved');
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      status.textContent = '✓ Saved';
+      status.classList.add('saved');
+      setTimeout(() => {
+        status.textContent = 'Saving locally';
+        status.classList.remove('saved');
+      }, 2000);
+    } catch(e) {
+      status.textContent = '⚠ Save failed';
+    }
+  }, 300);
+}
+
+// ============ TABS ============
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'decision') renderDecision();
+    if (btn.dataset.tab === 'compare') renderCompare();
+  });
+});
+
+// ============ PROFILE FIELDS (auto-save) ============
+function bindProfile() {
+  document.querySelectorAll('[data-save]').forEach(el => {
+    const key = el.dataset.save;
+    if (state.profile[key] !== undefined) el.value = state.profile[key];
+    el.addEventListener('input', () => {
+      state.profile[key] = el.value;
+      saveState();
+    });
+    el.addEventListener('change', () => {
+      state.profile[key] = el.value;
+      saveState();
+    });
+  });
+}
+
+// ============ RENDER PROGRAMS ============
+function renderPrograms() {
+  const list = document.getElementById('programs-list');
+  list.innerHTML = programs.map(p => programCardHTML(p)).join('');
+
+  programs.forEach(p => {
+    if (!state.programData[p.id]) state.programData[p.id] = {};
+    const pd = state.programData[p.id];
+
+    // Restore values
+    const ratingEl = document.querySelector(`[data-prog="${p.id}"] .star-rating`);
+    if (pd.rating) setStars(ratingEl, pd.rating);
+
+    const statusSel = document.querySelector(`[data-prog="${p.id}"] [data-pfield="status"]`);
+    if (pd.status) statusSel.value = pd.status;
+
+    const interestSel = document.querySelector(`[data-prog="${p.id}"] [data-pfield="interest"]`);
+    if (pd.interest) interestSel.value = pd.interest;
+
+    const notesEl = document.querySelector(`[data-prog="${p.id}"] [data-pfield="notes"]`);
+    if (pd.notes) notesEl.value = pd.notes;
+
+    // Bind events
+    document.querySelectorAll(`[data-prog="${p.id}"] .star`).forEach((s, idx) => {
+      s.addEventListener('click', () => {
+        const newRating = idx + 1;
+        pd.rating = (pd.rating === newRating) ? 0 : newRating;
+        setStars(ratingEl, pd.rating);
+        saveState();
+      });
+    });
+
+    statusSel.addEventListener('change', () => {
+      pd.status = statusSel.value;
+      saveState();
+    });
+    interestSel.addEventListener('change', () => {
+      pd.interest = interestSel.value;
+      saveState();
+    });
+    notesEl.addEventListener('input', () => {
+      pd.notes = notesEl.value;
+      saveState();
+    });
+
+    // Header click to expand
+    const card = document.querySelector(`[data-prog="${p.id}"]`);
+    card.querySelector('.program-header').addEventListener('click', () => {
+      card.classList.toggle('expanded');
+    });
+  });
+}
+
+function setStars(container, n) {
+  container.querySelectorAll('.star').forEach((s, idx) => {
+    s.classList.toggle('active', idx < n);
+  });
+}
+
+function programCardHTML(p) {
+  const tierLabel = p.tier === 1 ? 'Tier 1: Best Fit' : p.tier === 2 ? 'Tier 2: Strong Option' : 'Tier 3: Stretch';
+  const tierClass = `tier-${p.tier}`;
+  return `
+    <div class="program-card" data-prog="${p.id}" id="prog-${p.id}">
+      <div class="program-header">
+        <div class="program-title-block">
+          <h3 class="program-title">
+            ${p.name}
+            <span class="tier-badge ${tierClass}">${tierLabel}</span>
+          </h3>
+          <p class="program-school">${p.school}</p>
+          <div class="program-quick" style="margin-top: 8px;">
+            <span class="program-quick-item"><i class="ti ti-currency-dollar" style="vertical-align:-2px"></i> <strong>${p.quick.cost}</strong></span>
+            <span class="program-quick-item"><i class="ti ti-clock" style="vertical-align:-2px"></i> <strong>${p.quick.length}</strong></span>
+            <span class="program-quick-item"><i class="ti ti-device-laptop" style="vertical-align:-2px"></i> <strong>${p.quick.modality}</strong></span>
+            <span class="program-quick-item"><i class="ti ti-calendar" style="vertical-align:-2px"></i> <strong>${p.quick.start}</strong></span>
+          </div>
+        </div>
+        <i class="ti ti-chevron-down expand-icon"></i>
+      </div>
+
+      <div class="program-body">
+        <p style="margin: 0 0 1rem 0; font-size: 14px; color: var(--text);">${p.summary}</p>
+
+        <div class="detail-grid">
+          ${Object.entries(p.details).map(([k,v]) => `
+            <div class="detail-item">
+              <span class="lbl">${k}</span>
+              <span class="val">${v}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <h5>✓ Pros</h5>
+            <ul>${p.pros.map(x => `<li>${x}</li>`).join('')}</ul>
+          </div>
+          <div class="cons">
+            <h5>✗ Cons</h5>
+            <ul>${p.cons.map(x => `<li>${x}</li>`).join('')}</ul>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h4>Scholarships & Aid</h4>
+          <p>${p.scholarships}</p>
+        </div>
+
+        <div class="section-block">
+          <h4>Application Deadlines</h4>
+          <p>${p.deadline}</p>
+        </div>
+
+        <div class="section-block">
+          <h4>Career Placement</h4>
+          <p>${p.placement}</p>
+        </div>
+
+        <div class="section-block">
+          <h4>Why This Fits (or Doesn't)</h4>
+          <p style="background:#F0F9F5;padding:10px 12px;border-radius:6px;border-left:3px solid var(--teal);"><em>${p.fit}</em></p>
+        </div>
+
+        <div class="section-block">
+          <h4>Official Program Page</h4>
+          <p><a href="${p.link}" target="_blank">${p.link} <i class="ti ti-external-link" style="vertical-align:-2px;font-size:14px;"></i></a></p>
+        </div>
+
+        <div class="gabe-block">
+          <h4><i class="ti ti-message-circle"></i>Gabe's Reaction (capture in real-time)</h4>
+
+          <div class="rating-row">
+            <label>Overall rating:</label>
+            <div class="star-rating">
+              ${[1,2,3,4,5].map(n => `<span class="star" data-val="${n}">★</span>`).join('')}
+            </div>
+            <span style="font-size: 12px; color: var(--muted);">(click again to clear)</span>
+          </div>
+
+          <div class="rating-row">
+            <label>Interest level:</label>
+            <select data-pfield="interest" style="max-width:240px;">
+              <option value="">Not yet discussed</option>
+              <option value="excited">Excited / want to apply</option>
+              <option value="curious">Curious / need more info</option>
+              <option value="neutral">Neutral</option>
+              <option value="cool">Cool on it</option>
+              <option value="no">No interest</option>
+            </select>
+          </div>
+
+          <div class="rating-row">
+            <label>Apply decision:</label>
+            <select data-pfield="status" style="max-width:240px;">
+              <option value="">Decide later</option>
+              <option value="apply">Apply (target list)</option>
+              <option value="maybe">Maybe / backup</option>
+              <option value="skip">Skip / not a fit</option>
+            </select>
+          </div>
+
+          <div class="input-block">
+            <label>Discussion notes</label>
+            <textarea data-pfield="notes" placeholder="What did Gabe say? Concerns, questions, things to research, follow-up actions..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ COMPARE TABLE ============
+function renderCompare() {
+  const table = document.getElementById('compare-table');
+  const rows = [
+    { label: 'Tier', key: p => `Tier ${p.tier}` },
+    { label: 'Cost', key: p => p.quick.cost },
+    { label: 'Length', key: p => p.quick.length },
+    { label: 'Modality', key: p => p.quick.modality },
+    { label: 'Start', key: p => p.quick.start },
+    { label: 'Credits', key: p => p.details["Total Credits"] || '—' },
+    { label: 'GPA Floor', key: p => p.details["Min GPA"] || '—' },
+    { label: 'GRE/GMAT', key: p => p.details["GRE/GMAT"] || 'Not required' },
+    { label: 'STEM', key: p => p.details["STEM-designated"] || '—' },
+    { label: 'Deadlines', key: p => shortDeadline(p.deadline) },
+    { label: 'Scholarships', key: p => p.scholarships.substring(0, 100) + (p.scholarships.length > 100 ? '...' : '') },
+    { label: 'Consulting Track', key: p => consultingFlag(p) },
+    { label: "Gabe's Rating", key: p => {
+      const r = state.programData[p.id]?.rating;
+      return r ? '★'.repeat(r) + '☆'.repeat(5-r) : '—';
+    }},
+    { label: "Status", key: p => state.programData[p.id]?.status ? capitalize(state.programData[p.id].status) : '—' }
+  ];
+
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        ${programs.map(p => `<th>${p.id.toUpperCase()}<br><span style="font-weight:400;font-size:10px;opacity:0.75;">${p.school.split('—')[0].trim()}</span></th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(r => `
+        <tr>
+          <td>${r.label}</td>
+          ${programs.map(p => `<td>${r.key(p)}</td>`).join('')}
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+}
+
+function shortDeadline(d) {
+  if (d.length > 80) return d.substring(0, 80) + '...';
+  return d;
+}
+function consultingFlag(p) {
+  const text = (p.summary + p.placement + p.fit).toLowerCase();
+  if (text.includes('nyclab') || text.includes('year-long')) return 'Strong (NYCLab)';
+  if (p.id === 'kogod') return 'Strong (track)';
+  if (p.id === 'cudenver') return 'Built-in (Corps)';
+  if (p.id === 'stevens') return 'Module';
+  return 'Indirect';
+}
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ============ DECISION HELPER ============
+function renderDecision() {
+  const top = document.getElementById('top-picks');
+  const ranked = programs
+    .map(p => ({ ...p, rating: state.programData[p.id]?.rating || 0 }))
+    .filter(p => p.rating > 0)
+    .sort((a, b) => b.rating - a.rating);
+
+  if (ranked.length === 0) {
+    top.innerHTML = '<li style="color: var(--muted); font-size: 13px;">Rate programs in the Programs tab to populate this list.</li>';
+  } else {
+    top.innerHTML = ranked.map((p, i) => `
+      <li>
+        <span class="rank-num">${i+1}</span>
+        <div style="flex:1;">
+          <div style="font-weight:500;">${p.name.replace(/^MS in |^MPS in |^MBA in /, '')}</div>
+          <div style="font-size:11px;color:var(--muted);">${p.school}</div>
+        </div>
+        <span class="rank-stars">${'★'.repeat(p.rating)}${'☆'.repeat(5-p.rating)}</span>
+      </li>
+    `).join('');
+  }
+
+  // Status summary
+  const statusEl = document.getElementById('status-summary');
+  const buckets = { apply: [], maybe: [], skip: [], '': [] };
+  programs.forEach(p => {
+    const s = state.programData[p.id]?.status || '';
+    if (!buckets[s]) buckets[s] = [];
+    buckets[s].push(p);
+  });
+
+  let html = '';
+  if (buckets.apply.length) {
+    html += `<div style="margin-bottom:0.75rem;"><div style="color:#155724;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.3px;">Apply (${buckets.apply.length})</div><ul style="margin:4px 0 0 0;padding-left:1.25rem;">${buckets.apply.map(p => `<li>${p.school.split('—')[0].trim()}</li>`).join('')}</ul></div>`;
+  }
+  if (buckets.maybe.length) {
+    html += `<div style="margin-bottom:0.75rem;"><div style="color:#856404;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.3px;">Maybe (${buckets.maybe.length})</div><ul style="margin:4px 0 0 0;padding-left:1.25rem;">${buckets.maybe.map(p => `<li>${p.school.split('—')[0].trim()}</li>`).join('')}</ul></div>`;
+  }
+  if (buckets.skip.length) {
+    html += `<div style="margin-bottom:0.75rem;"><div style="color:#721c24;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.3px;">Skip (${buckets.skip.length})</div><ul style="margin:4px 0 0 0;padding-left:1.25rem;">${buckets.skip.map(p => `<li>${p.school.split('—')[0].trim()}</li>`).join('')}</ul></div>`;
+  }
+  if (buckets[''].length === programs.length) {
+    html = '<p style="color: var(--muted);">Set status on each program in the Programs tab.</p>';
+  }
+  statusEl.innerHTML = html;
+}
+
+// ============ TRACKER ============
+function renderTracker() {
+  const tbody = document.getElementById('tracker-body');
+  if (state.tracker.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:1.5rem;">No applications tracked yet. Click "Add Application" to start.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = state.tracker.map((row, idx) => `
+    <tr data-idx="${idx}">
+      <td><input type="text" data-tfield="program" value="${escapeHtml(row.program || '')}" /></td>
+      <td>
+        <select data-tfield="status">
+          <option value="not-started" ${row.status === 'not-started' ? 'selected' : ''}>Not started</option>
+          <option value="researching" ${row.status === 'researching' ? 'selected' : ''}>Researching</option>
+          <option value="in-progress" ${row.status === 'in-progress' ? 'selected' : ''}>In progress</option>
+          <option value="submitted" ${row.status === 'submitted' ? 'selected' : ''}>Submitted</option>
+          <option value="not-applying" ${row.status === 'not-applying' ? 'selected' : ''}>Not applying</option>
+        </select>
+      </td>
+      <td><input type="text" data-tfield="deadline" value="${escapeHtml(row.deadline || '')}" placeholder="e.g. Oct 15" /></td>
+      <td><input type="text" data-tfield="fee" value="${escapeHtml(row.fee || '')}" placeholder="$100" /></td>
+      <td><input type="text" data-tfield="recs" value="${escapeHtml(row.recs || '')}" placeholder="2 of 2" /></td>
+      <td>
+        <select data-tfield="essay">
+          <option value="">—</option>
+          <option value="not-started" ${row.essay === 'not-started' ? 'selected' : ''}>Not started</option>
+          <option value="drafting" ${row.essay === 'drafting' ? 'selected' : ''}>Drafting</option>
+          <option value="reviewing" ${row.essay === 'reviewing' ? 'selected' : ''}>Reviewing</option>
+          <option value="final" ${row.essay === 'final' ? 'selected' : ''}>Final</option>
+        </select>
+      </td>
+      <td>
+        <select data-tfield="transcript">
+          <option value="">—</option>
+          <option value="requested" ${row.transcript === 'requested' ? 'selected' : ''}>Requested</option>
+          <option value="received" ${row.transcript === 'received' ? 'selected' : ''}>Received</option>
+          <option value="sent" ${row.transcript === 'sent' ? 'selected' : ''}>Sent</option>
+        </select>
+      </td>
+      <td>
+        <select data-tfield="submitted">
+          <option value="no" ${row.submitted === 'no' || !row.submitted ? 'selected' : ''}>No</option>
+          <option value="yes" ${row.submitted === 'yes' ? 'selected' : ''}>Yes</option>
+        </select>
+      </td>
+      <td><input type="text" data-tfield="decisionDate" value="${escapeHtml(row.decisionDate || '')}" placeholder="Mar 15" /></td>
+      <td>
+        <select data-tfield="decision">
+          <option value="">—</option>
+          <option value="waiting" ${row.decision === 'waiting' ? 'selected' : ''}>Waiting</option>
+          <option value="accepted" ${row.decision === 'accepted' ? 'selected' : ''}>Accepted</option>
+          <option value="waitlist" ${row.decision === 'waitlist' ? 'selected' : ''}>Waitlist</option>
+          <option value="rejected" ${row.decision === 'rejected' ? 'selected' : ''}>Rejected</option>
+        </select>
+      </td>
+      <td><input type="text" data-tfield="notes" value="${escapeHtml(row.notes || '')}" /></td>
+      <td><button class="btn btn-danger" style="padding:4px 8px;" onclick="removeTrackerRow(${idx})"><i class="ti ti-trash"></i></button></td>
+    </tr>
+  `).join('');
+
+  // Bind events
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const idx = parseInt(tr.dataset.idx);
+    tr.querySelectorAll('[data-tfield]').forEach(el => {
+      el.addEventListener('input', () => {
+        state.tracker[idx][el.dataset.tfield] = el.value;
+        saveState();
+      });
+      el.addEventListener('change', () => {
+        state.tracker[idx][el.dataset.tfield] = el.value;
+        saveState();
+      });
+    });
+  });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function addTrackerRow() {
+  state.tracker.push({ program: '', status: 'not-started', submitted: 'no' });
+  saveState();
+  renderTracker();
+}
+
+function removeTrackerRow(idx) {
+  if (!confirm('Remove this application?')) return;
+  state.tracker.splice(idx, 1);
+  saveState();
+  renderTracker();
+}
+
+function populateFromApply() {
+  const applyList = programs.filter(p => state.programData[p.id]?.status === 'apply');
+  if (applyList.length === 0) {
+    alert('No programs marked "Apply" yet. Set status in the Programs tab first.');
+    return;
+  }
+  applyList.forEach(p => {
+    const exists = state.tracker.some(t => t.program === p.school);
+    if (!exists) {
+      state.tracker.push({
+        program: p.school,
+        status: 'researching',
+        deadline: shortDeadline(p.deadline).substring(0, 30),
+        fee: p.details["Application fee"] || '',
+        submitted: 'no'
+      });
+    }
+  });
+  saveState();
+  renderTracker();
+}
+
+// ============ UTILITIES ============
+function scrollToProg(id) {
+  const el = document.getElementById('prog-' + id);
+  if (el) {
+    el.classList.add('expanded');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function expandAll(state) {
+  document.querySelectorAll('.program-card').forEach(c => {
+    c.classList.toggle('expanded', state);
+  });
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const out = document.getElementById('export-output');
+  const ta = document.getElementById('export-text');
+  ta.value = data;
+  out.style.display = 'block';
+
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gabe-dashboard-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!confirm('Replace all current data with imported data?')) return;
+      state = imported;
+      saveState();
+      renderPrograms();
+      renderTracker();
+      bindProfile();
+      alert('Imported successfully!');
+    } catch(err) {
+      alert('Invalid JSON file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAll() {
+  if (!confirm('This will delete ALL data including ratings, notes, and tracker entries. Are you sure?')) return;
+  if (!confirm('Really sure? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// ============ INIT ============
+bindProfile();
+renderPrograms();
+renderTracker();
+</script>
+
+</body>
+</html>
